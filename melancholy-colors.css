@@ -17,7 +17,6 @@
    - term-blue-b light:   #4E90BC → #2C6E98  (was FAIL 2.82:1, now 4.50:1 AA)
    - term-cyan-b light:   #4E9090 → #2C6A6A  (was FAIL 2.98:1, now 5.05:1 AA)
    - term-magenta-b light:#9A60A0 → #7A4080  (was 3.74:1 AA-Large, now 5.94:1 AA)
-   - font fallback note:  added warning on Berkeley Mono / JetBrains Mono metrics
 
    Changelog v1.2:
    - term-red-b light:    #C44040 → #BA3A3A  (was 4.10:1 AA-Large, now 4.54:1 AA)
@@ -223,14 +222,9 @@
 :root {
     --font-sans:
         "Geist", system-ui, sans-serif; /* labels, titles, static text */
-    /*
-     Fallback note: Berkeley Mono and JetBrains Mono have meaningfully different
-     metrics — Berkeley is narrower, JetBrains is wider and heavier. The jump is
-     visible at bar scale if Berkeley Mono isn't installed. If distributing this
-     config, bundle Berkeley Mono or accept the fallback difference.
-  */
+
     --font-mono:
-        "Berkeley Mono", "JetBrains Mono", monospace; /* time, stats, values, terminal */
+        "Lilex Mono NF", monospace; /* time, stats, values, terminal */
 }
 
 /* ============================================================
