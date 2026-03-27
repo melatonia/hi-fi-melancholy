@@ -1,10 +1,10 @@
 {
   "$schema": "https://zed.dev/schema/themes/v0.1.0.json",
-  "name": "WARMLAB",
-  "author": "WARMLAB",
+  "name": "melancholy",
+  "author": "melatonia",
   "themes": [
     {
-      "name": "WARMLAB Light",
+      "name": "melancholy light",
       "appearance": "light",
       "style": {
         "background": "#F5F0E8",
@@ -375,7 +375,7 @@
     },
 
     {
-      "name": "WARMLAB Dark",
+      "name": "melancholy dark",
       "appearance": "dark",
       "style": {
         "background": "#16130F",

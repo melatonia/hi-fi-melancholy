@@ -15,7 +15,7 @@
   "ui_font_size": 16.0,
   "theme": {
     "mode": "system",
-    "light": "WARMLAB Light",
-    "dark": "WARMLAB Dark",
-  },
+    "light": "melancholy light",
+    "dark": "melancholy dark"
+  }
 }
