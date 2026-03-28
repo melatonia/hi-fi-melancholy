@@ -1,0 +1,6 @@
+QuickPanel 1.0 QuickPanel.qml
+VolumeSlider 1.0 VolumeSlider.qml
+BrightnessSlider 1.0 BrightnessSlider.qml
+NetworkInfo 1.0 NetworkInfo.qml
+BatteryInfo 1.0 BatteryInfo.qml
+PowerButton 1.0 PowerButton.qml
