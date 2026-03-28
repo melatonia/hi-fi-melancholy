@@ -50,7 +50,7 @@ PAL_NIGHT = [
 ]
 
 
-def apply_melancholy_pro(input_path, palette, output_path, is_night=False):
+def apply_melancholy_pro(input_path, palette, output_path, mode="morning"):
     go_nord = GoNord()
     go_nord.reset_palette()
     for color in palette:
@@ -59,14 +59,17 @@ def apply_melancholy_pro(input_path, palette, output_path, is_night=False):
     # Load image
     img = Image.open(input_path).convert("RGB")
 
-    # To fix "Harshness": We slightly pull back the contrast
-    # before processing. This forces the image to use more
-    # of the mid-tone grays/beiges in your palette.
-    if is_night:
+    # ── OPTIMIZATION: Mode-Specific Pre-Processing ──
+    if mode == "night":
+        # Soften shadows to use more mid-tone browns (Prevents harshness)
         img = ImageEnhance.Contrast(img).enhance(0.85)
+    else:
+        # Boost Morning contrast slightly so 'Parchment' doesn't look like 'Gray'
+        img = ImageEnhance.Contrast(img).enhance(1.1)
+        # Subtle saturation boost helps the denim blues and oranges pop
+        img = ImageEnhance.Color(img).enhance(1.1)
 
-    # Process using the core GoNord algorithm
-    # This maps pixels to the palette based on perceptual distance
+    # Core GoNord conversion
     result = go_nord.convert_image(img)
 
     result.save(output_path, quality=95)
@@ -80,15 +83,13 @@ def main():
     input_path = sys.argv[1]
     base = os.path.splitext(input_path)[0]
 
-    print("--- Refining Melancholy System ---")
+    print("── Melancholy System: Writing Wallpapers ──")
 
-    # Morning: Aiming for a soft, parchment-like stellar nursery
-    apply_melancholy_pro(input_path, PAL_MORNING, f"{base}-morning-refined.png")
+    # Morning: Soft, paper-like, tactile
+    apply_melancholy_pro(input_path, PAL_MORNING, f"{base}-morning.png", mode="morning")
 
-    # Night: Softening the contrast to remove the 'harsh' feel
-    apply_melancholy_pro(
-        input_path, PAL_NIGHT, f"{base}-night-refined.png", is_night=True
-    )
+    # Night: Deep, moody, low-contrast
+    apply_melancholy_pro(input_path, PAL_NIGHT, f"{base}-night.png", mode="night")
 
 
 if __name__ == "__main__":
