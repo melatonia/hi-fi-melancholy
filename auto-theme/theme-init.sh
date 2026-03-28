@@ -35,7 +35,7 @@ get_location() {
 
     # 3. No location available at all
     log "ERROR: Could not determine location. No internet, no cache."
-    notify-send "auto-theme" "Could not determine location. Connect to internet once to initialize." 2>/dev/null
+    notify-send "auto-theme" "Could not determine location. Connect to internet once to initialize." 2>/dev/null || true
     exit 1
 }
 
