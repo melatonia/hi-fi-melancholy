@@ -1,0 +1,8 @@
+Apps I use:
+zsh
+ghostty
+zed
+firefox
+quickshell
+mango
+sunwait

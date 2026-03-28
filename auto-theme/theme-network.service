@@ -1,0 +1,15 @@
+[Unit]
+Description=Auto theme switcher — update location when network arrives
+After=network-online.target
+Wants=network-online.target
+# Only run if we haven't already got a good location this boot
+ConditionPathExists=!%h/.local/share/auto-theme/location.cache
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/theme-init.sh schedule
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus
+
+[Install]
+WantedBy=network-online.target

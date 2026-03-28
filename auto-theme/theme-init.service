@@ -1,0 +1,13 @@
+[Unit]
+Description=Auto theme switcher — login init
+After=graphical-session.target geoclue.service
+Wants=geoclue.service
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/theme-init.sh schedule
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus
+
+[Install]
+WantedBy=default.target
