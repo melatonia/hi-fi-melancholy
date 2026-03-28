@@ -5,4 +5,4 @@ zed
 firefox
 quickshell
 mango
-sunwait
+darkman

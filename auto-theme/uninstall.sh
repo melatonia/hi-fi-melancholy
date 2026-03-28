@@ -4,8 +4,8 @@
 USERNAME=$(whoami)
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
-info()  { echo -e "${GREEN}[auto-theme]${NC} $*"; }
-warn()  { echo -e "${YELLOW}[auto-theme]${NC} $*"; }
+info() { echo -e "${GREEN}[auto-theme]${NC} $*"; }
+warn() { echo -e "${YELLOW}[auto-theme]${NC} $*"; }
 
 # --- Stop and disable user units ---
 disable_user_units() {
@@ -36,11 +36,16 @@ remove_files() {
 
     info "Removing system systemd unit..."
     sudo rm -f /etc/systemd/system/theme-resume@.service
-
-    # Clean up leftover symlinks
     sudo rm -f /etc/systemd/system/suspend.target.wants/theme-resume@${USERNAME}.service
     sudo rm -f /etc/systemd/system/hibernate.target.wants/theme-resume@${USERNAME}.service
     sudo rm -f /etc/systemd/system/hybrid-sleep.target.wants/theme-resume@${USERNAME}.service
+}
+
+# --- Reload systemd ---
+reload() {
+    systemctl --user daemon-reload
+    sudo systemctl daemon-reload
+    info "systemd reloaded."
 }
 
 # --- Optional: remove log and cache ---
@@ -54,14 +59,7 @@ remove_data() {
     fi
 }
 
-# --- Reload systemd ---
-reload() {
-    systemctl --user daemon-reload
-    sudo systemctl daemon-reload
-    info "systemd reloaded."
-}
-
-# --- Restore neutral GTK theme ---
+# --- Optional: restore GTK theme ---
 restore_gtk() {
     read -rp "Reset GTK color-scheme to 'default'? [y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then

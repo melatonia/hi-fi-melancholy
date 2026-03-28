@@ -1,7 +1,6 @@
 [Unit]
 Description=Auto theme switcher — login init
-After=graphical-session.target geoclue.service
-Wants=geoclue.service
+After=graphical-session.target
 
 [Service]
 Type=oneshot

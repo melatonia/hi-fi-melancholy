@@ -4,14 +4,12 @@
 set -e
 
 USERNAME=$(whoami)
-USER_ID=$(id -u)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# --- Colors ---
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
-info()    { echo -e "${GREEN}[auto-theme]${NC} $*"; }
-warn()    { echo -e "${YELLOW}[auto-theme]${NC} $*"; }
-error()   { echo -e "${RED}[auto-theme]${NC} $*"; exit 1; }
+info()  { echo -e "${GREEN}[auto-theme]${NC} $*"; }
+warn()  { echo -e "${YELLOW}[auto-theme]${NC} $*"; }
+error() { echo -e "${RED}[auto-theme]${NC} $*"; exit 1; }
 
 # --- Detect AUR helper ---
 detect_aur() {
@@ -36,7 +34,6 @@ install_sunwait() {
     if [[ -n "$AUR_HELPER" ]]; then
         "$AUR_HELPER" -S --noconfirm sunwait
     else
-        # Manual AUR build fallback
         info "Building sunwait from AUR manually..."
         TMP=$(mktemp -d)
         git clone https://aur.archlinux.org/sunwait.git "$TMP/sunwait"
@@ -47,21 +44,11 @@ install_sunwait() {
     fi
 }
 
-# --- Install geoclue ---
-install_geoclue() {
-    if pacman -Q geoclue 2>/dev/null | grep -q geoclue; then
-        info "geoclue already installed, skipping."
-    else
-        info "Installing geoclue..."
-        sudo pacman -S --noconfirm geoclue
-    fi
-}
-
-# --- Validate files ---
+# --- Validate repo files ---
 check_files() {
     local missing=()
     for f in theme-init.sh theme-init.service theme-reschedule.service \
-              theme-reschedule.timer theme-resume@.service; do
+              theme-reschedule.timer theme-resume.service; do
         [[ ! -f "$SCRIPT_DIR/$f" ]] && missing+=("$f")
     done
     if [[ ${#missing[@]} -gt 0 ]]; then
@@ -69,7 +56,7 @@ check_files() {
     fi
 }
 
-# --- Deploy ---
+# --- Deploy files ---
 deploy() {
     info "Installing script..."
     mkdir -p "$HOME/.local/bin"
@@ -83,10 +70,13 @@ deploy() {
     cp "$SCRIPT_DIR/theme-reschedule.timer"   "$HOME/.config/systemd/user/"
 
     info "Installing system systemd unit..."
-    sudo cp "$SCRIPT_DIR/theme-resume@.service" /etc/systemd/system/
+    sed -e "s/INSTALL_USER/${USERNAME}/g" \
+        -e "s/INSTALL_UID/$(id -u)/g" \
+        "$SCRIPT_DIR/theme-resume.service" \
+        | sudo tee /etc/systemd/system/theme-resume@.service > /dev/null
 }
 
-# --- Enable ---
+# --- Enable units ---
 enable_units() {
     info "Reloading systemd..."
     systemctl --user daemon-reload
@@ -135,7 +125,6 @@ verify() {
 info "Starting auto-theme installation..."
 check_files
 detect_aur
-install_geoclue
 install_sunwait
 deploy
 enable_units

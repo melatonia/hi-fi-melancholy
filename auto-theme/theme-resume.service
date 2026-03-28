@@ -1,0 +1,14 @@
+[Unit]
+Description=Auto theme switcher — resume from suspend
+After=suspend.target hibernate.target hybrid-sleep.target
+
+[Service]
+Type=oneshot
+ExecStartPre=/bin/sleep 3
+ExecStart=/home/INSTALL_USER/.local/bin/theme-init.sh schedule
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/INSTALL_UID/bus
+Environment=XDG_RUNTIME_DIR=/run/user/INSTALL_UID
+
+[Install]
+WantedBy=suspend.target hibernate.target hybrid-sleep.target
