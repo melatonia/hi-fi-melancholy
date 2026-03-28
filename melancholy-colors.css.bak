@@ -1,5 +1,5 @@
 /* ============================================================
-   Melancholy — Color System v1.4
+   WARMLAB — Color System v1.3
    Aesthetic: Functional warmth · Analog instrument panel
    Reference: TE OP-1, Arturia, Braun/Rams, early Macintosh
 
@@ -17,6 +17,7 @@
    - term-blue-b light:   #4E90BC → #2C6E98  (was FAIL 2.82:1, now 4.50:1 AA)
    - term-cyan-b light:   #4E9090 → #2C6A6A  (was FAIL 2.98:1, now 5.05:1 AA)
    - term-magenta-b light:#9A60A0 → #7A4080  (was 3.74:1 AA-Large, now 5.94:1 AA)
+   - font fallback note:  added warning on Berkeley Mono / JetBrains Mono metrics
 
    Changelog v1.2:
    - term-red-b light:    #C44040 → #BA3A3A  (was 4.10:1 AA-Large, now 4.54:1 AA)
@@ -30,7 +31,7 @@
    - blue-indicator light: comment updated — shape use only, never as text color (4.00:1)
    - term-white light:    #C2BCB2 → #5A5248 (= text-1 | 6.77:1 AA) — readable, receded
    - term-white-b light:  #F5F0E8 → #28241E (= text-0 | 13.60:1 AAA) — full emphasis
-                          Preserves normal/bright semantic distinction. Both on-palette.
+                            Preserves normal/bright semantic distinction. Both on-palette.
    ============================================================ */
 
 /* ============================================================
@@ -64,8 +65,6 @@
     /* Orange shades — mechanical control states only (knob hover ring, pressed shadow) */
     --accent-100: #f5d9c8; /* tint — very subtle bg highlight */
     --accent-200: #e8a882; /* hover glow ring around knob/slider */
-    /* accent-400 (light) and accent-600 (dark) mirror --accent-border/text.
-     If you change --accent-border, update the matching shade here too. */
     --accent-400: #c4601a; /* base border — = --accent-border */
     --accent-600: #8a4418; /* base text  — = --accent-text   */
     --accent-800: #5c2c0e; /* deep — pressed state shadow */
@@ -78,12 +77,12 @@
     /* --- Functional: System Health (Green, sage-shifted) --- */
     --green-indicator: #4e8c5a; /* dot/icon fill | 3.54:1 shape use ✓ */
     --green-text: #2a5230; /* 7.88:1 AAA ✓ */
-    --green-subtle: #d8ebd8; /* subtle bg tint if needed */
+    --green-subtle: #d8ebd8;
 
     /* --- Functional: Audio / Knob (Amber, warm, low-chroma) --- */
     --amber-indicator: #8a6a3a; /* dot/icon fill, knob ring | 4.40:1 shape use ✓ */
     --amber-text: #5c4220; /* 8.21:1 AAA ✓ */
-    --amber-subtle: #ede3ce; /* subtle bg tint if needed */
+    --amber-subtle: #ede3ce;
 
     /* --- Terminal Color Scheme (light surface) --- */
     /*
@@ -93,10 +92,10 @@
      CONTRAST NOTES:
      - term-yellow/blue/cyan normal: 3.68–4.12:1 AA-Large.
        Acceptable: terminal renders these at 14px bold weight.
-     - term-white: mapped to text-1 (#5A5248) — readable, slightly receded (6.77:1 AA).
-       term-white-b: mapped to text-0 (#28241E) — full emphasis (13.60:1 AAA).
-       Preserves normal/bright semantic distinction. Both are on-palette.
-       Map ANSI palette 7 → #5A5248 and palette 15 → #28241E in your terminal config.
+       - term-white: mapped to text-1 (#5A5248) — readable, slightly receded (6.77:1 AA).
+              term-white-b: mapped to text-0 (#28241E) — full emphasis (13.60:1 AAA).
+              Preserves normal/bright semantic distinction. Both are on-palette.
+              Map ANSI palette 7 → #5A5248 and palette 15 → #28241E in your terminal config.
      - term-black-b: intentionally higher contrast for "dark gray" role.
 
      Warm-shifted across the board — no cold primaries.
@@ -104,8 +103,8 @@
      Terminal emulators render bright = bold weight, not lighter color.
   */
     --term-bg: #ede7db; /* = bg-1 */
-    --term-bg-sel: #d4cec4; /* selection highlight — = --border-0 (mirrors dark mode alias) */
-    --term-fg: #28241e; /* = text-0 | 13.08:1 AAA on term-bg */
+    --term-bg-sel: #d4cec4; /* selection highlight */
+    --term-fg: #28241e; /* = text-0 | 12.53:1 AAA */
     --term-fg-dim: #68625c; /* dimmed/comment | 4.89:1 AA ✓ — v1.1: was #6E6860 */
 
     --term-black: #28241e; /* normal black */
@@ -129,8 +128,8 @@
     --term-cyan: #3a7878; /* strings, types | 4.12:1 AA-Large, bold context ✓ */
     --term-cyan-b: #2c6a6a; /* bright cyan    | 5.05:1 AA ✓ — v1.1: was #4E9090 (FAIL) */
 
-    --term-white: #5a5248; /* ANSI 7  — = text-1 | 6.77:1 AA — receded — v1.3: was #C2BCB2 (1.53:1 FAIL) */
-    --term-white-b: #28241e; /* ANSI 15 — = text-0 | 13.60:1 AAA — emphasis — v1.3: was #F5F0E8 (1.07:1 FAIL) */
+    --term-white: #5a5248; /* ANSI 7  — = text-1 | 6.77:1 AA — readable, slightly receded */
+    --term-white-b: #28241e; /* ANSI 15 — = text-0 | 13.60:1 AAA — full emphasis */
 
     --term-cursor: #c4601a; /* = --accent-border | cursor block */
     --term-cursor-fg: #f5f0e8; /* text under cursor */
@@ -143,98 +142,73 @@
 /* OS-level dark preference */
 @media (prefers-color-scheme: dark) {
     :root {
-        /* --- Backgrounds --- */
-        --bg-0: #16130f; /* base surface */
-        --bg-1: #1e1b16; /* raised surface */
-        --bg-2: #26231d; /* inset surface */
+        --bg-0: #16130f;
+        --bg-1: #1e1b16;
+        --bg-2: #26231d;
 
-        /* --- Borders --- */
-        --border-0: #2e2a24; /* inactive window border, dividers */
-        --border-1: #3a352e; /* stronger border, panel edges — v1.1: was missing */
+        --border-0: #2e2a24;
+        --border-1: #3a352e; /* v1.1: was missing */
 
-        /* --- Text --- */
-        --text-0: #f0ebe2; /* primary   | 15.59:1 on bg-0 AAA */
-        --text-1: #b8b2a8; /* secondary |  8.79:1 on bg-0 AAA */
-        --text-2: #908a82; /* tertiary  |  4.58:1 on bg-2 AA ✓ — v1.1: was #706A62 (FAIL 2.93:1) */
+        --text-0: #f0ebe2; /* 15.59:1 on bg-0 AAA */
+        --text-1: #b8b2a8; /*  8.79:1 on bg-0 AAA */
+        --text-2: #908a82; /*  4.58:1 on bg-2 AA ✓ — v1.1: was #706A62 (FAIL 2.93:1) */
 
-        /* --- Accent: TE Orange (single value for dark — both border and text) --- */
         --accent-border: #e8844a; /* 6.90:1 AA ✓ */
         --accent-text: #e8844a; /* same — contrast sufficient for both uses */
 
-        /* Orange shades — mechanical control states only */
-        --accent-100: #3a1e0a; /* deep tint */
-        --accent-200: #6a3418; /* mid tint */
-        /* accent-400 (light) and accent-600 (dark) mirror --accent-border/text.
-       If you change --accent-border, update the matching shade here too. */
-        --accent-400: #c46030; /* slightly dimmed variant */
-        --accent-600: #e8844a; /* base — = --accent-border/text */
-        --accent-800: #f0a870; /* light variant — hover state */
+        --accent-100: #3a1e0a;
+        --accent-200: #6a3418;
+        --accent-400: #c46030;
+        --accent-600: #e8844a;
+        --accent-800: #f0a870;
 
-        /* --- Functional: Network --- */
-        --blue-indicator: #78b4d4; /* dot/icon fill | 7.58:1 AAA ✓ */
+        --blue-indicator: #78b4d4; /* 7.58:1 AAA ✓ */
         --blue-text: #9ec4d8; /* 9.27:1 AAA ✓ — v1.1: was #A8D4EC (read cold) */
-        --blue-subtle: #1a2e3a; /* subtle bg tint if needed */
+        --blue-subtle: #1a2e3a;
 
-        /* --- Functional: System Health --- */
-        --green-indicator: #7ec48a; /* dot/icon fill | 8.30:1 AAA ✓ */
+        --green-indicator: #7ec48a; /* 8.30:1 AAA ✓ */
         --green-text: #a8d8b0; /* 10.72:1 AAA ✓ */
-        --green-subtle: #1a2e1e; /* subtle bg tint if needed */
+        --green-subtle: #1a2e1e;
 
-        /* --- Functional: Audio / Knob --- */
-        --amber-indicator: #d4a870; /* dot/icon fill, knob ring | 7.87:1 AAA ✓ */
+        --amber-indicator: #d4a870; /* 7.87:1 AAA ✓ */
         --amber-text: #e8c898; /* 10.74:1 AAA ✓ */
-        --amber-subtle: #2e2010; /* subtle bg tint if needed */
+        --amber-subtle: #2e2010;
 
-        /* --- Terminal Color Scheme (dark surface) --- */
-        /*
-       Background: --term-bg (#1E1B16).
-       All values AA or above except term-black-b (intentional — see note).
+        --term-bg: #1e1b16;
+        --term-bg-sel: #2e2a24;
+        --term-fg: #f0ebe2; /* 14.45:1 AAA */
+        --term-fg-dim: #908a82; /* 5.02:1 AA ✓ — v1.1: was #706A62 (FAIL 3.21:1) */
 
-       CONTRAST NOTE:
-       - term-black-b: #706A62 at 3.21:1. This is ANSI bright-black,
-         used for very faint dimmed output. Should recede — intentional.
+        --term-black: #26231d;
+        --term-black-b: #706a62; /* intentional dim | 3.21:1 AA-Large */
 
-       Warm-shifted across the board — no cold primaries.
-       "Bright" variants are lighter than normal (contrast-first).
-       Terminal emulators render bright = bold weight, not just lighter color.
-    */
-        --term-bg: #1e1b16; /* = bg-1 */
-        --term-bg-sel: #2e2a24; /* = border-0 */
-        --term-fg: #f0ebe2; /* = text-0 | 14.45:1 AAA */
-        --term-fg-dim: #908a82; /* dimmed/comment | 5.02:1 AA ✓ — v1.1: was #706A62 (FAIL 3.21:1) */
+        --term-red: #d46060; /* 4.61:1 AA ✓ */
+        --term-red-b: #e87878; /* 6.04:1 AA ✓ */
 
-        --term-black: #26231d; /* normal black */
-        --term-black-b: #706a62; /* bright black — intentional dim | 3.21:1 AA-Large */
+        --term-green: #7ec48a; /* 8.30:1 AAA ✓ */
+        --term-green-b: #a0d8a8; /* 10.53:1 AAA ✓ */
 
-        --term-red: #d46060; /* errors, deletions | 4.61:1 AA ✓ */
-        --term-red-b: #e87878; /* bright red        | 6.04:1 AA ✓ */
+        --term-yellow: #d4a870; /* 7.87:1 AAA ✓ */
+        --term-yellow-b: #e8c48a; /* 10.37:1 AAA ✓ */
 
-        --term-green: #7ec48a; /* additions, success | 8.30:1 AAA ✓ */
-        --term-green-b: #a0d8a8; /* bright green       | 10.53:1 AAA ✓ */
+        --term-blue: #78b4d4; /* 7.58:1 AAA ✓ */
+        --term-blue-b: #98c8e0; /* 9.54:1 AAA ✓ */
 
-        --term-yellow: #d4a870; /* warnings | 7.87:1 AAA ✓ */
-        --term-yellow-b: #e8c48a; /* bright yellow | 10.37:1 AAA ✓ */
+        --term-magenta: #c088c0; /* 6.15:1 AA ✓ */
+        --term-magenta-b: #d8a0d8; /* 8.12:1 AAA ✓ */
 
-        --term-blue: #78b4d4; /* links, info | 7.58:1 AAA ✓ */
-        --term-blue-b: #98c8e0; /* bright blue | 9.54:1 AAA ✓ */
+        --term-cyan: #70b0b0; /* 6.97:1 AA ✓ */
+        --term-cyan-b: #90c8c8; /* 9.22:1 AAA ✓ */
 
-        --term-magenta: #c088c0; /* keywords, special | 6.15:1 AA ✓ */
-        --term-magenta-b: #d8a0d8; /* bright magenta    | 8.12:1 AAA ✓ */
+        --term-white: #b8b2a8; /* = text-1 | 8.15:1 AAA ✓ */
+        --term-white-b: #f0ebe2; /* = text-0 | 14.45:1 AAA ✓ */
 
-        --term-cyan: #70b0b0; /* strings, types | 6.97:1 AA ✓ */
-        --term-cyan-b: #90c8c8; /* bright cyan    | 9.22:1 AAA ✓ */
-
-        --term-white: #b8b2a8; /* ANSI 7  — = text-1 | 8.15:1 AAA ✓ */
-        --term-white-b: #f0ebe2; /* ANSI 15 — = text-0 | 14.45:1 AAA ✓ */
-
-        --term-cursor: #e8844a; /* = --accent-border dark */
-        --term-cursor-fg: #16130f; /* text under cursor */
+        --term-cursor: #e8844a;
+        --term-cursor-fg: #16130f;
     }
 }
 
-/* JS-driven toggle — all values and roles identical to @media block above.
-   Contrast ratios and notes documented there. Do not edit one without the other.
-   v1.3: split from invalid comma-joined @media selector. */
+/* JS-driven toggle — v1.3: split from invalid comma-joined @media selector */
 [data-theme="dark"] {
     --bg-0: #16130f;
     --bg-1: #1e1b16;
@@ -309,10 +283,13 @@
     --font-sans:
         "Geist", system-ui, sans-serif; /* labels, titles, static text */
     /*
-     CommitMono chosen for the vibe.
-     Free — commitmono.com
+     Fallback note: Berkeley Mono and JetBrains Mono have meaningfully different
+     metrics — Berkeley is narrower, JetBrains is wider and heavier. The jump is
+     visible at bar scale if Berkeley Mono isn't installed. If distributing this
+     config, bundle Berkeley Mono or accept the fallback difference.
   */
-    --font-mono: "CommitMono", monospace; /* time, stats, values, terminal */
+    --font-mono:
+        "Berkeley Mono", "JetBrains Mono", monospace; /* time, stats, values, terminal */
 }
 
 /* ============================================================
@@ -328,7 +305,7 @@
     --border-active: 1.5px; /* active window border width */
     --border-inactive: 0.5px; /* inactive window border width — v1.1: was 1px */
 
-    --bar-height: 34px; /* top bar — not decided yet */
+    --bar-height: 34px; /* top bar */
 }
 
 /* ============================================================
@@ -370,8 +347,9 @@
    - Use the --term-* variables in your terminal emulator config
    - --term-cursor maps to your orange accent — consistent identity
    - term-yellow/blue/cyan normal in light mode are AA-Large (bold context, acceptable)
-   - term-white / term-white-b in light mode: map ANSI 7 → #5A5248, ANSI 15 → #28241E
-     Preserves normal/bright semantic distinction. Both are on-palette and fully readable.
+   - term-white / term-white-b in light mode are mapped to --text-0 (#28241E)
+     "White" as a literal color is unreadable on a light surface.
+     Map ANSI palette 7 and 15 to #28241E in your terminal emulator config.
    - term-black-b in dark mode is intentionally dim (bright-black = receding)
    - All other values AA or above
 
